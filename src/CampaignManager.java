@@ -103,6 +103,7 @@ public class CampaignManager {
 				updateDatabase(); // Updates the cached data into the database.
 				cleanCache(); // Clean the cache so that we can start on the
 								// next day's data
+				//System.out.println(file.getName());
 			}
 		}
 
@@ -124,11 +125,13 @@ public class CampaignManager {
 			fileReader = new FileReader(localfile);
 			bufferedReader = new BufferedReader(fileReader);
 			String line;
+			CampaignLevel campaign = null;
+			boolean bNewCampaign = false;
 			while ((line = bufferedReader.readLine()) != null) {
+				campaign = null;
+				bNewCampaign = false;				
 				// load the comma separated line into array items
 				ArrayList<String> items = new ArrayList(Arrays.asList(line.split(",")));
-				CampaignLevel campaign = null;
-				boolean bNewCampaign = false;
 				
 				// Only interested in rows that have the advertisers present in the map
 				if (map.containsKey(items.get(ADV_ID))) { 
@@ -174,19 +177,26 @@ public class CampaignManager {
 					// Add the creative data level for this order
 					if (order.getCreativeLevel(items.get(CREATIVE_ID)) == null) 
 						order.addCreative(items.get(CREATIVE_ID),
-								items.get(CREATIVE_NAME), items.get(PREV_URL));
+								items.get(CREATIVE_NAME), items.get(PREV_URL),
+								items.get(IMPRESSIONS),items.get(CLICKS), 
+								items.get(TWENTY_FIVE_VIEW),
+								items.get(FIFTY_VIEW),
+								items.get(SEVENTY_FIVE_VIEW),
+								items.get(HUNDRED_VIEW));
 
 					// Add this new row's data to the counts of the campaign
-					// itself
-					campaign.addToImpressionCount(Integer.parseInt(items
-							.get(IMPRESSIONS)));
-					campaign.addToClicksCount(Integer.parseInt(items
-							.get(CLICKS)));
-					campaign.addToPercentage(
-							Integer.parseInt(items.get(TWENTY_FIVE_VIEW)),
-							Integer.parseInt(items.get(FIFTY_VIEW)),
-							Integer.parseInt(items.get(SEVENTY_FIVE_VIEW)),
-							Integer.parseInt(items.get(HUNDRED_VIEW)));
+					// itself, if it was an already existed campaign
+					if(!bNewCampaign) {
+						campaign.addToImpressionCount(Integer.parseInt(items
+								.get(IMPRESSIONS)));
+						campaign.addToClicksCount(Integer.parseInt(items
+								.get(CLICKS)));
+						campaign.addToPercentage(
+								Integer.parseInt(items.get(TWENTY_FIVE_VIEW)),
+								Integer.parseInt(items.get(FIFTY_VIEW)),
+								Integer.parseInt(items.get(SEVENTY_FIVE_VIEW)),
+								Integer.parseInt(items.get(HUNDRED_VIEW)));
+					}					
 				}
 			}
 		} catch (IOException e) {

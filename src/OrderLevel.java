@@ -48,12 +48,13 @@ public class OrderLevel extends BaseLevel {
 		return creativeMap.get(creativeId);
 	}
 
-	public CreativeLevel addCreative(String creativeId, String creativeName,
-			String previewURL) {
+	public CreativeLevel addCreative(String creativeId, String creativeName, String previewURL,String sImpressions, String clicks,
+			String s25Percent, String s50Percent, String s75Percent,
+			String s100Percent) {
 		CreativeLevel creative = new CreativeLevel(creativeId, creativeName,
-				this.sOrderId, this.sLogDate, previewURL, this.nImpressions,
-				this.nClicks, this.n25PercentViews, this.n50PercentViews,
-				this.n75PercentViews, this.n100PercentViews);
+				this.sOrderId, this.sLogDate, previewURL, Integer.parseInt(sImpressions),
+				Integer.parseInt(clicks), Integer.parseInt(s25Percent), Integer.parseInt(s50Percent),
+				Integer.parseInt(s75Percent), Integer.parseInt(s100Percent));
 		creativeMap.put(creativeId, creative);
 
 		return creative;
